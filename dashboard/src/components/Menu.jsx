@@ -60,38 +60,7 @@ const Menu = () => {
               </p>
             </Link>
           </li>
-          <li>
-            <Link
-              style={{ textDecoration: "none" }}
-              to={"/positions"}
-              onClick={() => {
-                handleMenuClick(3);
-              }}
-            >
-              <p className={selectedMenu === 3 ? activeMenuClass : menuClass}>
-                Positions
-              </p>
-            </Link>
-          </li>
-          <li>
-            <Link
-              style={{ textDecoration: "none" }}
-              to={"/funds"}
-              onClick={() => {
-                handleMenuClick(4);
-              }}
-            >
-              <p className={selectedMenu === 4 ? activeMenuClass : menuClass}>
-                Funds
-              </p>
-            </Link>
-          </li>
         </ul>
-        <hr />
-        <div className="profile" onClick={handlProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
-        </div>
       </div>
     </div>
   );

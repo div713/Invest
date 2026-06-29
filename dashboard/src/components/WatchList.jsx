@@ -1,12 +1,17 @@
-import { useState } from "react";
-import { watchlist } from "../data/data";
+import React, { useState, useContext } from "react";
+
+import GeneralContext from "./GeneralContext";
+
+import { Tooltip, Grow } from "@mui/material";
+
 import {
   BarChartOutlined,
   KeyboardArrowDown,
   KeyboardArrowUp,
   MoreHoriz,
 } from "@mui/icons-material";
-import { Tooltip, Grow } from "@mui/material";
+
+import { watchlist } from "../data/data";
 
 const WatchList = () => {
   return (
@@ -23,92 +28,96 @@ const WatchList = () => {
       </div>
 
       <ul className="list">
-        {watchlist.map((st, index) => {
-          return <WatchlistItem stock={st} key={index}></WatchlistItem>;
+        {watchlist.map((stock, index) => {
+          return <WatchListItem stock={stock} key={index} />;
         })}
       </ul>
     </div>
   );
 };
 
-const WatchlistItem = ({ stock, index }) => {
-  const [showWatchlist, setshowWatchlist] = useState(false);
+export default WatchList;
 
-  const handlemouseEnter = (e) => {
-    setshowWatchlist(true);
+const WatchListItem = ({ stock }) => {
+  const [showWatchlistActions, setShowWatchlistActions] = useState(false);
+
+  const handleMouseEnter = (e) => {
+    setShowWatchlistActions(true);
   };
-  const handlemouseExit = (e) => {
-    setshowWatchlist(false);
+
+  const handleMouseLeave = (e) => {
+    setShowWatchlistActions(false);
   };
 
   return (
-    <li onMouseEnter={handlemouseEnter} onMouseLeave={handlemouseExit}>
+    <li onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="item">
         <p className={stock.isDown ? "down" : "up"}>{stock.name}</p>
         <div className="itemInfo">
           <span className="percent">{stock.percent}</span>
           {stock.isDown ? (
-            <KeyboardArrowDown className="down"></KeyboardArrowDown>
+            <KeyboardArrowDown className="down" />
           ) : (
-            <KeyboardArrowUp className="up"></KeyboardArrowUp>
+            <KeyboardArrowUp className="up" />
           )}
           <span className="price">{stock.price}</span>
         </div>
       </div>
-      {showWatchlist && <WatchlistActions uid={stock.name}></WatchlistActions>}
+      {showWatchlistActions && <WatchListActions uid={stock.name} />}
     </li>
   );
 };
 
-const WatchlistActions = ({ uid }) => {
+const WatchListActions = ({ uid }) => {
+  const generalContext = useContext(GeneralContext);
+
+  const handleBuyClick = () => {
+    generalContext.openBuyWindow(uid);
+  };
+
+  const handleSellClick = () => {
+    generalContext.openSellWindow(uid);
+  };
+
   return (
     <span className="actions">
       <span>
         <Tooltip
-          title="Buy"
+          title="Buy (B)"
           placement="top"
-          arrow={true}
+          arrow
           TransitionComponent={Grow}
         >
-          <button className="buy">Buy</button>
-        </Tooltip>
-      </span>
-      <span>
-        <Tooltip
-          title="Sell"
-          placement="top"
-          arrow={true}
-          TransitionComponent={Grow}
-        >
-          <button className="sell">Sell</button>
-        </Tooltip>
-      </span>
-      <span>
-        <Tooltip
-          title="Analytics"
-          placement="top"
-          arrow={true}
-          TransitionComponent={Grow}
-        >
-          <button className="action">
-            <BarChartOutlined className="icon"></BarChartOutlined>
+          <button className="buy" onClick={handleBuyClick}>
+            Buy
           </button>
         </Tooltip>
-      </span>
-      <span>
         <Tooltip
-          title="More"
+          title="Sell (S)"
           placement="top"
-          arrow={true}
+          arrow
+          TransitionComponent={Grow}
+        >
+          <button className="sell" onClick={handleSellClick}>
+            Sell
+          </button>
+        </Tooltip>
+        <Tooltip
+          title="Analytics (A)"
+          placement="top"
+          arrow
           TransitionComponent={Grow}
         >
           <button className="action">
-            <MoreHoriz></MoreHoriz>
+            <BarChartOutlined className="icon" />
+          </button>
+        </Tooltip>
+        <Tooltip title="More" placement="top" arrow TransitionComponent={Grow}>
+          <button className="action">
+            <MoreHoriz className="icon" />
           </button>
         </Tooltip>
       </span>
     </span>
   );
 };
-
-export default WatchList;

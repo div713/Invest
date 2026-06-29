@@ -1,63 +1,89 @@
-import { holdings } from "../data/data";
+import { useEffect, useState } from "react";
+
+import axios from "axios";
+import api from "../api";
 
 const Holdings = () => {
+  const [allHoldings, setallHoldings] = useState([]);
+
+  useEffect(() => {
+    api.get("/allHoldings").then((res) => {
+      setallHoldings(res.data);
+    });
+  }, []);
+  const totalInvestment = allHoldings.reduce(
+    (sum, stock) => sum + Number(stock.avg) * Number(stock.qty),
+    0,
+  );
+
+  const currentValue = allHoldings.reduce(
+    (sum, stock) => sum + Number(stock.price) * Number(stock.qty),
+    0,
+  );
+
+  const totalPnL = currentValue - totalInvestment;
+
+  const totalPnLPercentage =
+    totalInvestment === 0 ? 0 : (totalPnL / totalInvestment) * 100;
   return (
     <>
-      <h3 className="title">Holdings ({holdings.length})</h3>
+      <h3 className="title">Holdings ({allHoldings.length})</h3>
 
       <div className="order-table">
         <table>
-          <tr>
-            <th>Instrument</th>
-            <th>Qty.</th>
-            <th>Avg. cost</th>
-            <th>LTP</th>
-            <th>Cur. val</th>
-            <th>P&L</th>
-            <th>Net chg.</th>
-            <th>Day chg.</th>
-          </tr>
+          <thead>
+            <tr>
+              <th>Instrument</th>
+              <th>Qty.</th>
+              <th>Avg. cost</th>
+              <th>LTP</th>
+              <th>Cur. val</th>
+              <th>P&L</th>
+              <th>Net chg.</th>
+              <th>Day chg.</th>
+            </tr>
+          </thead>
 
-          {holdings.map((stock, index) => {
-            const curvalue = stock.price * stock.qty;
-            const isProfit = (curvalue - stock.avg) * stock.qty >= 0;
-            const profClass = isProfit ? "profit" : "loss";
-            const dayClass = stock.isLoss ? "loss" : "profit";
+          <tbody>
+            {allHoldings.map((stock, index) => {
+              const curvalue = stock.price * stock.qty;
+              const isProfit = (curvalue - stock.avg) * stock.qty >= 0;
+              const profClass = isProfit ? "profit" : "loss";
+              const dayClass = stock.isLoss ? "loss" : "profit";
 
-            return (
-              <tr key={index}>
-                <td>{stock.name}</td>
-                <td>{stock.qty}</td>
-                <td>{stock.avg.toFixed(2)}</td>
-                <td>{stock.price.toFixed(2)}</td>
-                <td>{curvalue.toFixed(2)}</td>
-                <td className={profClass}>
-                  {((curvalue - stock.avg) * stock.qty).toFixed(2)}
-                </td>
-                <td className={profClass}>{stock.net}</td>
-                <td className={dayClass}>{stock.net}</td>
-              </tr>
-            );
-          })}
+              return (
+                <tr key={index}>
+                  <td>{stock.name}</td>
+                  <td>{stock.qty}</td>
+                  <td>{stock.avg}</td>
+                  <td>{stock.price}</td>
+                  <td>{curvalue}</td>
+                  <td className={profClass}>
+                    {(stock.price - stock.avg) * stock.qty}
+                  </td>
+                  <td className={profClass}>{stock.net}</td>
+                  <td className={dayClass}>{stock.net}</td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
 
       <div className="row">
         <div className="col">
-          <h5>
-            29,875.<span>55</span>{" "}
-          </h5>
+          <h5>₹{totalInvestment.toFixed(2)} </h5>
           <p>Total investment</p>
         </div>
         <div className="col">
-          <h5>
-            31,428.<span>95</span>{" "}
-          </h5>
+          <h5>₹{currentValue.toFixed(2)} </h5>
           <p>Current value</p>
         </div>
         <div className="col">
-          <h5>1,553.40 (+5.20%)</h5>
-          <p>P&L</p>
+          <h5 className={totalPnL >= 0 ? "profit" : "loss"}>
+            ₹{totalPnL.toFixed(2)} ({totalPnLPercentage.toFixed(2)}%)
+          </h5>
+          <p>P&amp;L</p>
         </div>
       </div>
     </>
