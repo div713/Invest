@@ -9,19 +9,21 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.dir(import.meta.env.VITE_BACKEND_URL);
 
     try {
-      const res = await axios.post("http://localhost:3002/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        {
+          email,
+          password,
+        },
+      );
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.user.username);
 
-      window.location.href = `http://localhost:3001?token=${encodeURIComponent(
-        res.data.token,
-      )}`;
+      window.location.href = `${import.meta.env.VITE_DASHBOARD_URL}?token=${res.data.token}`;
     } catch (err) {
       alert("Invalid Email or Password");
     }

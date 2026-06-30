@@ -26,7 +26,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        window.location.href = "http://localhost:3000/login";
+        window.location.href = "https://investx-land1.onrender.com/login";
         return;
       }
 
@@ -36,7 +36,7 @@ const Dashboard = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
 
-        window.location.href = "http://localhost:3000/login";
+        window.location.href = "https://investx-land1.onrender.com/login";
       }
     };
 
@@ -47,7 +47,7 @@ const Dashboard = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
 
-    window.location.href = "http://localhost:3000";
+    window.location.href=import.meta.env.VITE_LANDING_URL;
   };
 
   return (

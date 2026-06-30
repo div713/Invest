@@ -15,9 +15,26 @@ const PORT = process.env.PORT || 3002;
 const url = process.env.MONGO_URL;
 
 const app = express();
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://investx-land1.onrender.com",
+  "https://investx-dashboard.onrender.com",
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin(origin, callback) {
+      // Allow requests with no origin (e.g. Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
@@ -287,13 +304,12 @@ app.post("/login", async (req, res) => {
         message: "Invalid Credentials",
       });
 
-      // console.log("Entered password:", password);
-      // console.log("Stored password:", user.password);
-
+    // console.log("Entered password:", password);
+    // console.log("Stored password:", user.password);
 
     const match = await bcrypt.compare(password, user.password);
 
-      // console.log("Password match:", match);
+    // console.log("Password match:", match);
 
     if (!match)
       return res.status(401).json({
