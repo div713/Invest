@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
+
 import api from "../api";
 const Summary = () => {
   const [holdings, setHoldings] = useState([]);
@@ -9,7 +9,7 @@ const Summary = () => {
     api.get("/allHoldings").then((res) => {
     setHoldings(res.data);
     })
-  });
+  },[]);
 
   const totalInvestment = holdings.reduce(
     (sum, stock) => sum + Number(stock.avg) * Number(stock.qty),

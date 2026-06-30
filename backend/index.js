@@ -213,6 +213,7 @@ app.post("/newOrder", auth, async (req, res) => {
 
       holding.avg = totalCost / holding.qty;
       holding.price = price;
+      holding.net = String((((price - holding.avg) / holding.avg) * 100).toFixed(2)) + "%";
 
       await holding.save();
     } else {
@@ -222,8 +223,6 @@ app.post("/newOrder", auth, async (req, res) => {
         qty,
         avg: price,
         price,
-        net: "0%",
-        isLoss: false,
       });
     }
   } else {

@@ -42,6 +42,13 @@ code {
   margin-right: 8px;
 }
 
+.profit{
+  color: rgb(86, 135, 14);
+}
+.loss{
+  color: red !important;
+}
+
 .btn {
   text-decoration: none;
   padding: 10px 20px;
@@ -526,7 +533,6 @@ hr {
 .data .first h3 {
   font-size: 2.5rem;
   font-weight: 300;
-  color: rgb(71, 71, 71);
 }
 
 .data .first p {
@@ -536,7 +542,7 @@ hr {
 
 .data .first small {
   font-size: 0.8rem;
-  color: rgb(72, 194, 55);
+  
 }
 
 .data .first .profit {

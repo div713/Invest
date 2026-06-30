@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import axios from "axios";
 import api from "../api";
 
 const Holdings = () => {
@@ -40,17 +39,17 @@ const Holdings = () => {
               <th>Cur. val</th>
               <th>P&L</th>
               <th>Net chg.</th>
-              <th>Day chg.</th>
+             
             </tr>
           </thead>
 
           <tbody>
             {allHoldings.map((stock, index) => {
               const curvalue = stock.price * stock.qty;
-              const isProfit = (curvalue - stock.avg) * stock.qty >= 0;
+              const isProfit = curvalue - (stock.avg * stock.qty) >= 0;
               const profClass = isProfit ? "profit" : "loss";
-              const dayClass = stock.isLoss ? "loss" : "profit";
-
+              const netClass = parseFloat(stock.net) >= 0 ? "profit" : "loss";
+        
               return (
                 <tr key={index}>
                   <td>{stock.name}</td>
@@ -61,8 +60,8 @@ const Holdings = () => {
                   <td className={profClass}>
                     {(stock.price - stock.avg) * stock.qty}
                   </td>
-                  <td className={profClass}>{stock.net}</td>
-                  <td className={dayClass}>{stock.net}</td>
+                  <td className={netClass}>{stock.net}</td>
+                  
                 </tr>
               );
             })}
